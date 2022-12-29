@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useReducer } from "react";
 import "./../styles/App.css";
 
 // Do not alter the states const and values inside it.
@@ -154,8 +154,52 @@ const states = [
   },
 ];
 
+function Towns(props) {
+  return (
+    <div>
+      <ul>
+        {states[props.ind1].cities[props.ind2].towns.map((item, index) => (<div key={index}><li id={"town"+(index+1)}>{item.name}</li></div>))}
+      </ul>
+    </div>
+  )
+}
+
+function Citites(props) {
+  const [town, setTown] = useReducer((town, index) => {
+    let t = [...town];
+    t[index] = !t[index];
+    return t;
+  }, [false, false, false, false, false, false]);
+
+  return (
+    <div>
+      <ul>
+        {states[props.ind].cities.map((item, index) => (<div key={index}><li id={"city" + (index+1)} onClick={() => {setTown(index)}}>{item.name}</li>{town[index]?(<Towns ind1={props.ind} ind2={index} />):(<></>)}</div>))}
+      </ul>
+    </div>
+  )
+}
+
+function States(props) {
+  const [city, setCity] = useReducer((city, index) => {
+    let t = [...city];
+    t[index] = !t[index];
+    return t;
+  }, [false, false, false, false, false, false]);
+
+  return (
+    <div>
+      {states.map((item, index) => (<div key={index}><li id={"state" + (index+1)} onClick={()=>{setCity(index);}}>{item.name}</li>{city[index]?<Citites ind={index} /> : <></>}</div>))}
+    </div>
+  );
+}
+
 function App() {
-  return <div id="main"></div>;
+  return <div id="main">
+    <ul>
+      <States />
+    </ul>
+  </div>;
 }
 
 export default App;
